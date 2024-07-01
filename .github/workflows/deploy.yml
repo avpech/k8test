@@ -21,7 +21,7 @@ jobs:
 
       - name: Log to Docker Registry
         run: |
-          echo ${{ secrets.DOCKER_PASSWORD }} | docker login https://${{ secrets.DOCKER_REGISTRY }} --username ${{ secrets.DOCKER_USERNAME }} --password-stdin
+          echo ${{ secrets.DOCKER_PASSWORD }} | docker login https://${{ secrets.DOCKER_REGISTRY }} --username ${{ secrets.DOCKER_USERNAME }} --password-stdin --insecure-registry ${{ secrets.DOCKER_REGISTRY }}
 
       - name: Push Docker image to Registry
         run: |
