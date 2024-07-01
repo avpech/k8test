@@ -1,12 +1,11 @@
 name: Deploy to Kuber
 
-on:
-  push:
-    branches:
-      - master
+on: [push]
+
 
 jobs:
   build:
+    if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
 
     steps:
