@@ -1,0 +1,9 @@
+container:
+  image: 83.166.235.248:5000/kube:latest
+  imagePullPolicy: Always
+  port: 8000
+
+imagePullSecrets:
+- name: k8s-registry-creds
+
+replicaCount: 3

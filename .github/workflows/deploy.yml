@@ -1,0 +1,35 @@
+name: Deploy to Kuber
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Build Docker image
+        run: |
+          docker build -t kube:latest .
+
+      - name: Log to Docker Registry
+        run: |
+          echo ${{ secrets.DOCKER_PASSWORD }} | docker login https://${{ secrets.DOCKER_REGISTRY }} --username ${{ secrets.DOCKER_USERNAME }} --password-stdin
+
+      - name: Push Docker image to Registry
+        run: |
+          docker tag kube:latest ${{ secrets.DOCKER_REGISTRY }}/kube:latest
+          docker push ${{ secrets.DOCKER_REGISTRY }}/kube:latest
+
+      - name: Setup Kubeconfig
+        run: |
+          echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
+
+      - name: Deploy to Kubernetes
+        run: |
+          helm upgrade --install app .helm --set container.image=${{ secrets.DOCKER_REGISTRY }}/kube:latest

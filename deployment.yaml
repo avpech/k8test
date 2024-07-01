@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+  labels:
+    app: kube-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      project: kube
+  template:
+    metadata:
+      labels:
+        project: kube
+    spec:
+      imagePullSecrets:
+      - name: k8s-registry-creds
+      containers:
+      - name: my-app
+        image: 83.166.235.248:5000/kube:latest
+        ports:
+        - containerPort: 8000
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-app
+spec:
+  type: LoadBalancer
+  selector:
+    project: kube
+  ports:
+  - name: my-kube-app
+    protocol: TCP
+    port: 80
+    targetPort: 8000
