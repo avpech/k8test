@@ -16,6 +16,14 @@ jobs:
         run: |
           docker build -t kube:latest .
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+        with:
+          config-inline: |
+            [registry."${{ secrets.DOCKER_REGISTRY }}"]
+              http = true
+              insecure = true
+
       - name: Log to Docker Registry
         run: |
           echo ${{ secrets.DOCKER_PASSWORD }} | docker login https://${{ secrets.DOCKER_REGISTRY }} --username ${{ secrets.DOCKER_USERNAME }} --password-stdin
